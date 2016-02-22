@@ -1,4 +1,4 @@
-package terasort.hawk.iit.edu;
+package edu.iit.hawk.terasort;
 
 public class HelloWorld {
 
