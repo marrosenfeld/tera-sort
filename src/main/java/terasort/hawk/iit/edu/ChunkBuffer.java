@@ -29,7 +29,7 @@ public class ChunkBuffer {
            }
         }
         buffer.add(record);
-        System.out.println("Data "+ record.getValue() +" produced by "+writerName);
+//        System.out.println("Data "+ record.getValue() +" produced by "+writerName);
         notifyAll();
      }
 	
@@ -44,7 +44,7 @@ public class ChunkBuffer {
         Record record = buffer.remove(0);
         Thread.sleep(1000);
         notifyAll();
-        System.out.println("Data "+ record.getValue() + " consumed by "+ readerName);
+//        System.out.println("Data "+ record.getValue() + " consumed by "+ readerName);
         return record;
      }
 }
