@@ -61,6 +61,34 @@ public class ChunkFileWriter extends Thread {
 		this.chunkSize = chunkSize;
 	}
 
+	// @Override
+	// public void run() {
+	//
+	// RandomAccessFile raf = null;
+	//
+	// try {
+	// raf = new RandomAccessFile(filename, "rw");
+	// raf.seek(offset * 2);
+	// for (int i = 0; i < chunkCount; i++) {
+	// String chunk = chunkBuffer.read(this.getName());
+	// // + (2 * i * chunkSize));
+	// raf.writeUTF(chunk);
+	// }
+	// } catch (FileNotFoundException e) {
+	// throw new RuntimeException(e);
+	// } catch (IOException e) {
+	// throw new RuntimeException(e);
+	// } catch (Exception e) {
+	// throw new RuntimeException(e);
+	// } finally {
+	// try {
+	// if (raf != null)
+	// raf.close();
+	// } catch (Exception e) {
+	// throw new RuntimeException(e);
+	// }
+	// }
+	// }
 	@Override
 	public void run() {
 
@@ -68,11 +96,11 @@ public class ChunkFileWriter extends Thread {
 
 		try {
 			raf = new RandomAccessFile(filename, "rw");
-			raf.seek(offset * 2);
+			raf.seek(offset);
 			for (int i = 0; i < chunkCount; i++) {
 				String chunk = chunkBuffer.read(this.getName());
 				// + (2 * i * chunkSize));
-				raf.writeChars(chunk);
+				raf.writeBytes(chunk);
 			}
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException(e);
@@ -89,5 +117,4 @@ public class ChunkFileWriter extends Thread {
 			}
 		}
 	}
-
 }

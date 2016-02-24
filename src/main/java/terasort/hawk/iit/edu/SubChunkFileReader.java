@@ -7,21 +7,24 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-public class ChunkFileReader extends Thread {
-	private ChunkBuffer chunkBuffer;
+public class SubChunkFileReader extends Thread {
+	private SubChunkBuffer subChunkBuffer;
 	private String filename;
 	private Integer offset;
-	private Integer chunkCount;
+	private Integer subChunkCount;
 	private Integer chunkSize;
+	private Integer subChunkSize;
 
-	public ChunkFileReader(ChunkBuffer chunkBuffer, String threadName, String filename, Integer offset,
-			Integer chunkCount, Integer chunkSize) {
-		this.chunkBuffer = chunkBuffer;
-		this.setName(threadName);
+	public SubChunkFileReader(SubChunkBuffer subChunkBuffer, String filename, Integer offset, Integer subChunkCount,
+			Integer chunkSize, Integer subChunkSize) {
+		super();
+		this.subChunkBuffer = subChunkBuffer;
 		this.filename = filename;
 		this.offset = offset;
-		this.chunkCount = chunkCount;
+		this.subChunkCount = subChunkCount;
 		this.chunkSize = chunkSize;
+		this.subChunkSize = subChunkSize;
+
 	}
 
 	@Override
@@ -38,15 +41,14 @@ public class ChunkFileReader extends Thread {
 			br = new BufferedReader(isr);
 
 			br.skip(offset);
-
+			Integer index = offset / chunkSize;
 			// creates buffer
-			char[] cbuf = new char[chunkSize];
+			char[] cbuf = new char[subChunkSize];
 
-			for (int i = 0; i < chunkCount; i++) {
-				int read = br.read(cbuf, 0, chunkSize);
-				// System.out.println("Read by " + this.getName() + ": " +
-				// String.valueOf(cbuf));
-				chunkBuffer.write(String.valueOf(cbuf), this.getName());
+			for (int i = 0; i < subChunkCount; i++) {
+				int read = br.read(cbuf, 0, subChunkSize);
+				subChunkBuffer.write(index, String.valueOf(cbuf), this.getName());
+				index++;
 			}
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException(e);
@@ -66,14 +68,6 @@ public class ChunkFileReader extends Thread {
 		}
 	}
 
-	public ChunkBuffer getChunkBuffer() {
-		return chunkBuffer;
-	}
-
-	public void setChunkBuffer(ChunkBuffer chunkBuffer) {
-		this.chunkBuffer = chunkBuffer;
-	}
-
 	public String getFilename() {
 		return filename;
 	}
@@ -90,20 +84,20 @@ public class ChunkFileReader extends Thread {
 		this.offset = offset;
 	}
 
-	public Integer getChunkCount() {
-		return chunkCount;
-	}
-
-	public void setChunkCount(Integer chunkCount) {
-		this.chunkCount = chunkCount;
-	}
-
 	public Integer getChunkSize() {
 		return chunkSize;
 	}
 
 	public void setChunkSize(Integer chunkSize) {
 		this.chunkSize = chunkSize;
+	}
+
+	public Integer getSubChunkCount() {
+		return subChunkCount;
+	}
+
+	public void setSubChunkCount(Integer subChunkCount) {
+		this.subChunkCount = subChunkCount;
 	}
 
 }

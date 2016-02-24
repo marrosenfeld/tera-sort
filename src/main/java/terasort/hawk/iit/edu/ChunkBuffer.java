@@ -42,7 +42,6 @@ public class ChunkBuffer {
 			}
 		}
 		String chunk = buffer.remove(0);
-		Thread.sleep(1000);
 		notifyAll();
 		System.out.println("Data " + chunk + " consumed by " + readerName);
 		return chunk;

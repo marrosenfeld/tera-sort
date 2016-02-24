@@ -9,10 +9,14 @@ public class TeraSort {
 		// ProducerConsumerProblem pcp = new ProducerConsumerProblem();
 		Integer fileReaderThreads = Integer.valueOf(args[0]);
 		Integer memoryThreads = Integer.valueOf(args[1]);
+		// Chunk Size in Bytes
 		Integer chunkSize = Integer.valueOf(args[2]);
 		Integer recordSize = Integer.valueOf(args[3]);
 		Integer fileSize = Integer.valueOf(args[4]);
+		// Buffer size = number of chunks in buffer.
 		Integer bufferSize = Integer.valueOf(args[5]);
+		// So total memory = bufferSize * chunkSize * 2 buffers
+		Integer availableMemory = bufferSize * chunkSize * 2;
 
 		ChunkBuffer chunkBuffer = new ChunkBuffer(bufferSize);
 		ChunkBuffer orderedChunkBuffer = new ChunkBuffer(bufferSize);
@@ -50,6 +54,8 @@ public class TeraSort {
 			e.printStackTrace();
 		}
 
+		Merger merger = new Merger(fileSize, chunkSize, availableMemory, fileReaderThreads, recordSize);
+		merger.run();
 		// merge phase
 		System.out.println("End");
 	}
