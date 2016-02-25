@@ -8,10 +8,10 @@ public class FinalChunkFileWriter extends Thread {
 	private ChunkBuffer chunkBuffer;
 	private String filename;
 	private Integer chunkSize;
-	private Integer fileSize;
+	private Long fileSize;
 
 	public FinalChunkFileWriter(ChunkBuffer chunkBuffer, String threadName, String filename, Integer chunkSize,
-			Integer fileSize) {
+			Long fileSize) {
 		this.chunkBuffer = chunkBuffer;
 		this.setName(threadName);
 		this.filename = filename;

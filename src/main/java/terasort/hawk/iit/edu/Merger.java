@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Merger extends Thread {
-	private Integer fileSize;
+	private Long fileSize;
 	private Integer chunkSize;
-	private Integer availableMemory;
+	private Long availableMemory;
 	private Integer fileReaderThreadsCount;
 	private Integer recordSize;
 
-	public Merger(Integer fileSize, Integer chunkSize, Integer availableMemory, Integer fileReaderThreadsCount,
+	public Merger(Long fileSize, Integer chunkSize, Long availableMemory, Integer fileReaderThreadsCount,
 			Integer recordSize) {
 		super();
 		this.fileSize = fileSize;
@@ -93,10 +93,10 @@ public class Merger extends Thread {
 
 	}
 
-	private List<SubChunkFileReader> getSubChunkFileReaders(Integer fileReaderThreads, Integer chunkSize,
-			Integer fileSize, SubChunkBuffer subChunkBuffer) {
+	private List<SubChunkFileReader> getSubChunkFileReaders(Integer fileReaderThreads, Integer chunkSize, Long fileSize,
+			SubChunkBuffer subChunkBuffer) {
 		List<SubChunkFileReader> subChunkFileReaders = new ArrayList<SubChunkFileReader>();
-		Integer chunksPerThread = fileSize / chunkSize / fileReaderThreads;
+		Integer chunksPerThread = ((Long) (fileSize / chunkSize / fileReaderThreads)).intValue();
 		for (int i = 0; i < fileReaderThreads; i++) {
 			SubChunkFileReader reader = new SubChunkFileReader(subChunkBuffer,
 					"/home/mrosenfeld/repo/tera-sort/dataset_tmp", i * chunkSize * chunksPerThread, chunksPerThread,
@@ -105,18 +105,19 @@ public class Merger extends Thread {
 		}
 		if (fileSize / chunkSize % fileReaderThreads > 0) {
 			SubChunkFileReader lastChunkFileReader = subChunkFileReaders.get(subChunkFileReaders.size() - 1);
-			lastChunkFileReader.setSubChunkCount(
-					lastChunkFileReader.getSubChunkCount() + (fileSize / chunkSize % fileReaderThreads));
+			lastChunkFileReader.setSubChunkCount(lastChunkFileReader.getSubChunkCount()
+					+ ((Long) (fileSize / chunkSize % fileReaderThreads)).intValue());
 		}
 		return subChunkFileReaders;
 	}
 
 	public Integer getSubChunkSize() {
-		return Math.min(chunkSize, recordSize * ((availableMemory / this.getChunkCount()) / recordSize));
-		// return availableMemory / this.getChunkCount();
+		return Math.min(chunkSize,
+				((Long) (recordSize * ((availableMemory / this.getChunkCount()) / recordSize))).intValue());
+
 	}
 
 	public Integer getChunkCount() {
-		return fileSize / chunkSize;
+		return ((Long) (fileSize / chunkSize)).intValue();
 	}
 }
