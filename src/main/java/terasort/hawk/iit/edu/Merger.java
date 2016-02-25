@@ -3,7 +3,7 @@ package terasort.hawk.iit.edu;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Merger extends Thread {
+public class Merger {
 	private Long fileSize;
 	private Integer chunkSize;
 	private Long availableMemory;
@@ -20,9 +20,10 @@ public class Merger extends Thread {
 		this.recordSize = recordSize;
 	}
 
-	@Override
-	public void run() {
+	public void merge() {
 		SubChunkBuffer subChunkBuffer = new SubChunkBuffer(this.getChunkCount(), chunkSize, this.getSubChunkSize());
+
+		// fill buffer with 1 subchunk of each chunk
 		List<SubChunkFileReader> subChunkFileReaders = getSubChunkFileReaders(fileReaderThreadsCount, chunkSize,
 				fileSize, subChunkBuffer);
 		for (SubChunkFileReader subChunkFileReader : subChunkFileReaders) {
@@ -44,6 +45,7 @@ public class Merger extends Thread {
 		finalChunkFileWriter.start();
 
 		for (int i = 0; i < fileSize / recordSize; i++) {
+			// get minimum record from subchunks
 			Record minRecord = null;
 			Integer minRecordIdx = null;
 			for (int j = 0; j < subChunkBuffer.getBuffer().length; j++) {
@@ -61,12 +63,12 @@ public class Merger extends Thread {
 					}
 				}
 			}
+			// remove the first record from the subchunk
 			subChunkBuffer.getBuffer()[minRecordIdx]
 					.setContent(subChunkBuffer.getBuffer()[minRecordIdx].getContent().substring(recordSize));
 
 			if (subChunkBuffer.getBuffer()[minRecordIdx].getContent().isEmpty()) {
-				// bring more from file
-
+				// bring more from file if already not read the whole chunk
 				subChunkBuffer.getBuffer()[minRecordIdx]
 						.setSubChunkIndex(subChunkBuffer.getBuffer()[minRecordIdx].getSubChunkIndex() + 1);
 				if (subChunkBuffer.getBuffer()[minRecordIdx].getSubChunkIndex() * this.getSubChunkSize() < chunkSize) {
@@ -111,6 +113,7 @@ public class Merger extends Thread {
 		return subChunkFileReaders;
 	}
 
+	// get subchunk size (in bytes)
 	public Integer getSubChunkSize() {
 		return Math.min(chunkSize,
 				((Long) (recordSize * ((availableMemory / this.getChunkCount()) / recordSize))).intValue());

@@ -18,6 +18,9 @@ public class TeraSort {
 		Long fileSize = Long.valueOf(args[3]);
 		// Available memory in bytes
 		Long availableMemory = Long.valueOf(args[4]);
+		// files path
+		String filePath = args[5];
+
 		// Buffer size = number of chunks in buffer
 		Integer bufferSize = ((Long) (availableMemory / 2 / chunkSize)).intValue();
 
@@ -25,14 +28,15 @@ public class TeraSort {
 		ChunkBuffer chunkBuffer = new ChunkBuffer(bufferSize);
 		ChunkBuffer orderedChunkBuffer = new ChunkBuffer(bufferSize);
 
-		removeCurrentFiles();
+		removeCurrentFiles(filePath);
 		// sort phase
 
-		List<ChunkFileReader> chunkFileReaders = getChunkFileReaders(fileThreads, chunkSize, fileSize, chunkBuffer);
+		List<ChunkFileReader> chunkFileReaders = getChunkFileReaders(fileThreads / 2, chunkSize, fileSize, chunkBuffer,
+				filePath);
 		List<ChunkMemorySorter> chunkMemorySorters = getChunkMemorySorters(memoryThreads, fileSize, chunkSize,
 				recordSize, chunkBuffer, orderedChunkBuffer);
-		List<ChunkFileWriter> chunkFileWriters = getChunkFileWriters(fileThreads, chunkSize, fileSize,
-				orderedChunkBuffer);
+		List<ChunkFileWriter> chunkFileWriters = getChunkFileWriters(fileThreads / 2, chunkSize, fileSize,
+				orderedChunkBuffer, filePath);
 
 		for (ChunkFileReader chunkFileReader : chunkFileReaders) {
 			chunkFileReader.start();
@@ -59,26 +63,25 @@ public class TeraSort {
 		}
 
 		Merger merger = new Merger(fileSize, chunkSize, availableMemory, fileThreads, recordSize);
-		merger.run();
+		merger.merge();
 		// merge phase
 		System.out.println("End");
 	}
 
-	private static void removeCurrentFiles() {
-		File file = new File("/home/mrosenfeld/repo/tera-sort/dataset_tmp");
+	private static void removeCurrentFiles(String filePath) {
+		File file = new File(filePath + "dataset_tmp");
 		file.delete();
-		file = new File("/home/mrosenfeld/repo/tera-sort/dataset_final");
+		file = new File(filePath + "dataset_final");
 		file.delete();
 	}
 
 	private static List<ChunkFileWriter> getChunkFileWriters(Integer fileWriterThreads, Integer chunkSize,
-			Long fileSize, ChunkBuffer orderedChunkBuffer) {
+			Long fileSize, ChunkBuffer orderedChunkBuffer, String filePath) {
 		List<ChunkFileWriter> chunkFileWriters = new ArrayList<ChunkFileWriter>();
 		Integer chunksPerThread = ((Long) (fileSize / chunkSize / fileWriterThreads)).intValue();
 		for (int i = 0; i < fileWriterThreads; i++) {
-			ChunkFileWriter writer = new ChunkFileWriter(orderedChunkBuffer, "fileReader " + i,
-					"/home/mrosenfeld/repo/tera-sort/dataset_tmp", i * chunkSize * chunksPerThread, chunksPerThread,
-					chunkSize);
+			ChunkFileWriter writer = new ChunkFileWriter(orderedChunkBuffer, "fileWriter " + i,
+					filePath + "dataset_tmp", i * chunkSize * chunksPerThread, chunksPerThread, chunkSize);
 			chunkFileWriters.add(writer);
 		}
 		if (fileSize / chunkSize % fileWriterThreads > 0) {
@@ -115,21 +118,19 @@ public class TeraSort {
 		return chunkMemorySorters;
 	}
 
-	private static List<ChunkFileReader> getChunkFileReaders(Integer fileReaderThreads, Integer chunkSize,
-			Long fileSize, ChunkBuffer chunkBuffer) {
+	private static List<ChunkFileReader> getChunkFileReaders(Integer fileThreads, Integer chunkSize, Long fileSize,
+			ChunkBuffer chunkBuffer, String filePath) {
 		List<ChunkFileReader> chunkFileReaders = new ArrayList<ChunkFileReader>();
-		Integer chunksPerThread = ((Long) (fileSize / chunkSize / fileReaderThreads)).intValue();
-		for (int i = 0; i < fileReaderThreads; i++) {
-			ChunkFileReader reader = new ChunkFileReader(chunkBuffer, "fileReader " + i,
-					"/home/mrosenfeld/repo/tera-sort/dataset", i * chunkSize * chunksPerThread, chunksPerThread,
-					chunkSize);
+		Integer chunksPerThread = ((Long) (fileSize / chunkSize / fileThreads)).intValue();
+		for (int i = 0; i < fileThreads; i++) {
+			ChunkFileReader reader = new ChunkFileReader(chunkBuffer, "fileReader " + i, filePath + "dataset",
+					i * chunkSize * chunksPerThread, chunksPerThread, chunkSize);
 			chunkFileReaders.add(reader);
 		}
-		if (fileSize / chunkSize % fileReaderThreads > 0) {
+		if (fileSize / chunkSize % fileThreads > 0) {
 			ChunkFileReader lastChunkFileReader = chunkFileReaders.get(chunkFileReaders.size() - 1);
 			lastChunkFileReader.setChunkCount(
-					((Long) (lastChunkFileReader.getChunkCount() + (fileSize / chunkSize % fileReaderThreads)))
-							.intValue());
+					((Long) (lastChunkFileReader.getChunkCount() + (fileSize / chunkSize % fileThreads))).intValue());
 		}
 		return chunkFileReaders;
 	}

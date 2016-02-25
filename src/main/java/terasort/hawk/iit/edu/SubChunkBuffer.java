@@ -9,7 +9,7 @@ public class SubChunkBuffer {
 		this.capacity = capacity;
 		buffer = new SubChunk[capacity];
 		for (int i = 0; i < capacity; i++) {
-			buffer[i] = new SubChunk(i, 0, chunkSize, subChunkSize);
+			buffer[i] = new SubChunk(0);
 		}
 	}
 
@@ -18,20 +18,8 @@ public class SubChunkBuffer {
 	}
 
 	public synchronized String read(String readerName, Integer index) throws InterruptedException {
-		buffer[index].setChunkIndex(buffer[index].getSubChunkIndex() + 1);
+		// buffer[index].setChunkIndex(buffer[index].getSubChunkIndex() + 1);
 		return buffer[index].getContent();
-		// while (isEmpty()) {
-		// try {
-		// wait();
-		// } catch (InterruptedException e) {
-		// e.printStackTrace();
-		// }
-		// }
-		// String chunk = buffer.remove(0);
-		// Thread.sleep(1000);
-		// notifyAll();
-		// System.out.println("Data " + chunk + " consumed by " + readerName);
-		// return chunk;
 	}
 
 	public SubChunk[] getBuffer() {
