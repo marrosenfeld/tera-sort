@@ -38,6 +38,10 @@ public class Merger extends Thread {
 
 		// records to order
 		StringBuilder chunk = new StringBuilder();
+		ChunkBuffer chunkBuffer = new ChunkBuffer(1);
+		FinalChunkFileWriter finalChunkFileWriter = new FinalChunkFileWriter(chunkBuffer, "Final", "dataset_final",
+				chunkSize, fileSize);
+		finalChunkFileWriter.start();
 
 		for (int i = 0; i < fileSize / recordSize; i++) {
 			Record minRecord = null;
@@ -77,10 +81,16 @@ public class Merger extends Thread {
 			}
 			chunk.append(minRecord.getValue());
 			if (chunk.length() == chunkSize) {
-				// write in buffer
+				chunkBuffer.write(chunk.toString(), "Merger");
+				chunk = new StringBuilder();
 			}
 		}
-		chunk.toString();
+		try {
+			finalChunkFileWriter.join();
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		}
+
 	}
 
 	private List<SubChunkFileReader> getSubChunkFileReaders(Integer fileReaderThreads, Integer chunkSize,

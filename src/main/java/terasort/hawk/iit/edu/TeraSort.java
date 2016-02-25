@@ -1,5 +1,6 @@
 package terasort.hawk.iit.edu;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +22,7 @@ public class TeraSort {
 		ChunkBuffer chunkBuffer = new ChunkBuffer(bufferSize);
 		ChunkBuffer orderedChunkBuffer = new ChunkBuffer(bufferSize);
 
+		removeCurrentFiles();
 		// sort phase
 
 		List<ChunkFileReader> chunkFileReaders = getChunkFileReaders(fileReaderThreads, chunkSize, fileSize,
@@ -58,6 +60,13 @@ public class TeraSort {
 		merger.run();
 		// merge phase
 		System.out.println("End");
+	}
+
+	private static void removeCurrentFiles() {
+		File file = new File("/home/mrosenfeld/repo/tera-sort/dataset_tmp");
+		file.delete();
+		file = new File("/home/mrosenfeld/repo/tera-sort/dataset_final");
+		file.delete();
 	}
 
 	private static List<ChunkFileWriter> getChunkFileWriters(Integer fileWriterThreads, Integer chunkSize,

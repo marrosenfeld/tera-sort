@@ -1,7 +1,5 @@
 package terasort.hawk.iit.edu;
 
-import java.util.Arrays;
-
 import org.apache.commons.lang3.StringUtils;
 
 public class ChunkMemorySorter extends Thread {
@@ -31,7 +29,6 @@ public class ChunkMemorySorter extends Thread {
 				Record[] records = this.splitChunk(chunk, chunkSize, recordSize);
 				recordQuickSort.sort(records);
 				orderedChunkBuffer.write(StringUtils.join(records), this.getName());
-				System.out.println(this.getName() + " read and sort: " + Arrays.asList(records));
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

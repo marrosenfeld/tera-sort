@@ -29,7 +29,6 @@ public class ChunkBuffer {
 			}
 		}
 		buffer.add(chunk);
-		System.out.println("Data " + chunk + " produced by " + writerName);
 		notifyAll();
 	}
 
@@ -43,7 +42,6 @@ public class ChunkBuffer {
 		}
 		String chunk = buffer.remove(0);
 		notifyAll();
-		System.out.println("Data " + chunk + " consumed by " + readerName);
 		return chunk;
 	}
 }

@@ -17,7 +17,7 @@ public class Record implements Comparable<Record> {
 	}
 
 	public String getKey() {
-		return this.value.split(" ")[0];
+		return this.value.substring(0, 10);
 	}
 
 	public int compareTo(Record anotherRecord) {

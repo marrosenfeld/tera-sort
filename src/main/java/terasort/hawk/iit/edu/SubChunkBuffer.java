@@ -15,7 +15,6 @@ public class SubChunkBuffer {
 
 	public synchronized void write(Integer index, String subChunk, String writerName) {
 		buffer[index].setContent(subChunk);
-		System.out.println("Data " + subChunk + " produced by " + writerName);
 	}
 
 	public synchronized String read(String readerName, Integer index) throws InterruptedException {
