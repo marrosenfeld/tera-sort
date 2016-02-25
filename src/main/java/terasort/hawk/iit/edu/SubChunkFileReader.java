@@ -43,12 +43,13 @@ public class SubChunkFileReader extends Thread {
 			br.skip(offset);
 			Integer index = offset / chunkSize;
 			// creates buffer
-			char[] cbuf = new char[subChunkSize];
+			char[] cbuf = new char[Math.min(subChunkSize, ((index + 1) * chunkSize) - offset)];
 
 			for (int i = 0; i < subChunkCount; i++) {
-				int read = br.read(cbuf, 0, subChunkSize);
+				int read = br.read(cbuf, 0, Math.min(subChunkSize, ((index + 1) * chunkSize) - offset));
 				subChunkBuffer.write(index, String.valueOf(cbuf), this.getName());
 				index++;
+				br.skip(chunkSize - subChunkSize);
 			}
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException(e);

@@ -19,6 +19,7 @@ public class SubChunkBuffer {
 	}
 
 	public synchronized String read(String readerName, Integer index) throws InterruptedException {
+		buffer[index].setChunkIndex(buffer[index].getSubChunkIndex() + 1);
 		return buffer[index].getContent();
 		// while (isEmpty()) {
 		// try {
@@ -33,4 +34,21 @@ public class SubChunkBuffer {
 		// System.out.println("Data " + chunk + " consumed by " + readerName);
 		// return chunk;
 	}
+
+	public SubChunk[] getBuffer() {
+		return buffer;
+	}
+
+	public void setBuffer(SubChunk[] buffer) {
+		this.buffer = buffer;
+	}
+
+	public Integer getCapacity() {
+		return capacity;
+	}
+
+	public void setCapacity(Integer capacity) {
+		this.capacity = capacity;
+	}
+
 }
