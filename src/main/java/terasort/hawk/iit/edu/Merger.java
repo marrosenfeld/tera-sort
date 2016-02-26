@@ -36,7 +36,7 @@ public class Merger {
 				throw new RuntimeException(e);
 			}
 		}
-
+		System.out.println("Start actual merging");
 		// records to order
 		StringBuilder chunk = new StringBuilder();
 		ChunkBuffer chunkBuffer = new ChunkBuffer(1);

@@ -71,6 +71,7 @@ public class ChunkFileWriter extends Thread {
 			raf.seek(offset);
 			for (int i = 0; i < chunkCount; i++) {
 				String chunk = chunkBuffer.read(this.getName());
+				System.out.println(String.format("%s write orderd chunk %d to file", this.getName(), i));
 				raf.writeBytes(chunk);
 			}
 		} catch (FileNotFoundException e) {

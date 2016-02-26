@@ -28,6 +28,7 @@ public class ChunkMemorySorter extends Thread {
 				String chunk = chunkBuffer.read(this.getName());
 				Record[] records = this.splitChunk(chunk, chunkSize, recordSize);
 				recordQuickSort.sort(records);
+				System.out.println(String.format("%s sorted chunk %d", this.getName(), i));
 				orderedChunkBuffer.write(StringUtils.join(records), this.getName());
 			} catch (InterruptedException e) {
 				e.printStackTrace();

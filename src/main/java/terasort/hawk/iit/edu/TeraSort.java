@@ -24,6 +24,12 @@ public class TeraSort {
 		// Buffer size = number of chunks in buffer
 		Integer bufferSize = ((Long) (availableMemory / 2 / chunkSize)).intValue();
 
+		long startTime = System.currentTimeMillis();
+
+		System.out.println(String.format(
+				"Set Up: \nFile Threads: %d\nMemory Threads: %d\nChunk Size: %d\nRecord Size: %d\nFile Size: %d\nAvailable Memory: %d\nFile Path: %s\nBufferSize: %d",
+				fileThreads, memoryThreads, chunkSize, recordSize, fileSize, availableMemory, filePath, bufferSize));
+
 		// declare buffers
 		ChunkBuffer chunkBuffer = new ChunkBuffer(bufferSize);
 		ChunkBuffer orderedChunkBuffer = new ChunkBuffer(bufferSize);
@@ -61,11 +67,13 @@ public class TeraSort {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-
+		System.out.println("Start merge phase");
 		Merger merger = new Merger(fileSize, chunkSize, availableMemory, fileThreads, recordSize);
 		merger.merge();
 		// merge phase
+		long endTime = System.currentTimeMillis();
 		System.out.println("End");
+		System.out.println("Time taken: " + (endTime - startTime));
 	}
 
 	private static void removeCurrentFiles(String filePath) {
