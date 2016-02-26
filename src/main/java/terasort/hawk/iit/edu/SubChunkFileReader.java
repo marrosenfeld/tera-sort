@@ -47,7 +47,9 @@ public class SubChunkFileReader extends Thread {
 
 			for (int i = 0; i < subChunkCount; i++) {
 				int read = br.read(cbuf, 0, Math.min(subChunkSize, ((index + 1) * chunkSize) - offset));
+				System.out.println(this.getName() + " " + i);
 				subChunkBuffer.write(index, String.valueOf(cbuf), this.getName());
+				System.out.println(String.format("%s read %d/%d", this.getName(), i, subChunkCount));
 				index++;
 				br.skip(chunkSize - subChunkSize);
 			}
