@@ -9,15 +9,17 @@ public class Merger {
 	private Long availableMemory;
 	private Integer fileReaderThreadsCount;
 	private Integer recordSize;
+	private String filePath;
 
 	public Merger(Long fileSize, Integer chunkSize, Long availableMemory, Integer fileReaderThreadsCount,
-			Integer recordSize) {
+			Integer recordSize, String filePath) {
 		super();
 		this.fileSize = fileSize;
 		this.chunkSize = chunkSize;
 		this.availableMemory = availableMemory;
 		this.fileReaderThreadsCount = fileReaderThreadsCount;
 		this.recordSize = recordSize;
+		this.filePath = filePath;
 	}
 
 	public void merge() {
@@ -36,7 +38,7 @@ public class Merger {
 				throw new RuntimeException(e);
 			}
 		}
-		System.out.println("Start actual merging");
+
 		// records to order
 		StringBuilder chunk = new StringBuilder();
 		ChunkBuffer chunkBuffer = new ChunkBuffer(1);
@@ -72,8 +74,7 @@ public class Merger {
 				subChunkBuffer.getBuffer()[minRecordIdx]
 						.setSubChunkIndex(subChunkBuffer.getBuffer()[minRecordIdx].getSubChunkIndex() + 1);
 				if (subChunkBuffer.getBuffer()[minRecordIdx].getSubChunkIndex() * this.getSubChunkSize() < chunkSize) {
-					SubChunkFileReader reader = new SubChunkFileReader(subChunkBuffer,
-							"/home/mrosenfeld/repo/tera-sort/dataset_tmp",
+					SubChunkFileReader reader = new SubChunkFileReader(subChunkBuffer, filePath + "/dataset_tmp",
 							minRecordIdx * chunkSize + (subChunkBuffer.getBuffer()[minRecordIdx].getSubChunkIndex()
 									* this.getSubChunkSize()),
 							1, chunkSize, this.getSubChunkSize());

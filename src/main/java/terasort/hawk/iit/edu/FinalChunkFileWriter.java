@@ -33,6 +33,7 @@ public class FinalChunkFileWriter extends Thread {
 				// + (2 * i * chunkSize));
 				raf.writeBytes(chunk);
 				size += chunk.length();
+				System.out.println(String.format("Write %d/%d to final file", size, fileSize));
 			}
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException(e);

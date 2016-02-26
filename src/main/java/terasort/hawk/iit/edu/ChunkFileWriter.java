@@ -21,6 +21,36 @@ public class ChunkFileWriter extends Thread {
 		this.chunkSize = chunkSize;
 	}
 
+	@Override
+	public void run() {
+
+		RandomAccessFile raf = null;
+
+		try {
+			raf = new RandomAccessFile(filename, "rw");
+			raf.seek(offset);
+			for (int i = 0; i < chunkCount; i++) {
+				String chunk = chunkBuffer.read(this.getName());
+				System.out.println(
+						String.format("%s write orderd chunk %d/%d to file", this.getName(), i + 1, chunkCount));
+				raf.writeBytes(chunk);
+			}
+		} catch (FileNotFoundException e) {
+			throw new RuntimeException(e);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		} finally {
+			try {
+				if (raf != null)
+					raf.close();
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
+	}
+
 	public ChunkBuffer getChunkBuffer() {
 		return chunkBuffer;
 	}
@@ -61,32 +91,4 @@ public class ChunkFileWriter extends Thread {
 		this.chunkSize = chunkSize;
 	}
 
-	@Override
-	public void run() {
-
-		RandomAccessFile raf = null;
-
-		try {
-			raf = new RandomAccessFile(filename, "rw");
-			raf.seek(offset);
-			for (int i = 0; i < chunkCount; i++) {
-				String chunk = chunkBuffer.read(this.getName());
-				System.out.println(String.format("%s write orderd chunk %d to file", this.getName(), i));
-				raf.writeBytes(chunk);
-			}
-		} catch (FileNotFoundException e) {
-			throw new RuntimeException(e);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		} finally {
-			try {
-				if (raf != null)
-					raf.close();
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-		}
-	}
 }

@@ -44,7 +44,6 @@ public class ChunkFileReader extends Thread {
 
 			for (int i = 0; i < chunkCount; i++) {
 				br.read(cbuf, 0, chunkSize);
-				System.out.println(String.format("%s read chunk %d from file", this.getName(), i));
 				chunkBuffer.write(String.valueOf(cbuf), this.getName());
 			}
 		} catch (FileNotFoundException e) {

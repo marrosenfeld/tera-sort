@@ -27,7 +27,7 @@ public class TeraSort {
 		long startTime = System.currentTimeMillis();
 
 		System.out.println(String.format(
-				"Set Up: \nFile Threads: %d\nMemory Threads: %d\nChunk Size: %d\nRecord Size: %d\nFile Size: %d\nAvailable Memory: %d\nFile Path: %s\nBufferSize: %d",
+				"Set Up: \nFile Threads: %d\nMemory Threads: %d\nChunk Size: %d\nRecord Size: %d\nFile Size: %d\nAvailable Memory: %d\nFile Path: %s\nBufferSize: %d\n",
 				fileThreads, memoryThreads, chunkSize, recordSize, fileSize, availableMemory, filePath, bufferSize));
 
 		// declare buffers
@@ -68,7 +68,7 @@ public class TeraSort {
 			e.printStackTrace();
 		}
 		System.out.println("Start merge phase");
-		Merger merger = new Merger(fileSize, chunkSize, availableMemory, fileThreads, recordSize);
+		Merger merger = new Merger(fileSize, chunkSize, availableMemory, fileThreads, recordSize, filePath);
 		merger.merge();
 		// merge phase
 		long endTime = System.currentTimeMillis();
