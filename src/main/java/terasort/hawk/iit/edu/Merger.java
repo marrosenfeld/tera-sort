@@ -57,14 +57,16 @@ public class Merger {
 			}
 
 			// remove the first record from the subchunk
-			String record = subChunk.content.substring(0, recordSize);
-			subChunk.setContent(subChunk.getContent().substring(recordSize));
+			// String record = subChunk.getContent().substring(0, recordSize);
+			String record = subChunk.getFirstRecord();
+			// subChunk.setContent(subChunk.getContent().substring(recordSize));
+			subChunk.removeFirstRecord();
 
-			if (subChunk.getContent().isEmpty()) {
+			if (subChunk.isEmpty()) {
 				// bring more from file if already not read the whole chunk
 				subChunk.setSubChunkIndex(subChunk.getSubChunkIndex() + 1);
 				if (subChunk.getSubChunkIndex() * this.getSubChunkSize() < chunkSize) {
-					SubChunkFileReader2 reader = new SubChunkFileReader2(subChunkBuffer, filePath + "/dataset_tmp",
+					SubChunkFileReader reader = new SubChunkFileReader(subChunkBuffer, filePath + "/dataset_tmp",
 							subChunk.getChunkIndex() * chunkSize
 									+ (subChunk.getSubChunkIndex() * this.getSubChunkSize()),
 							1, chunkSize, this.getSubChunkSize());
