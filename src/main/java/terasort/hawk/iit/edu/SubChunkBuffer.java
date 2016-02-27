@@ -1,33 +1,25 @@
 package terasort.hawk.iit.edu;
 
+import java.util.PriorityQueue;
+
 public class SubChunkBuffer {
-	private SubChunk[] buffer;
+	private PriorityQueue<SubChunk> buffer;
 	private Integer capacity;
 
 	public SubChunkBuffer(Integer capacity, Integer chunkSize, Integer subChunkSize) {
 		super();
 		this.capacity = capacity;
-		buffer = new SubChunk[capacity];
-		for (int i = 0; i < capacity; i++) {
-			buffer[i] = new SubChunk(0);
-		}
+		buffer = new PriorityQueue<SubChunk>();
+
 	}
 
-	public synchronized void write(Integer index, String subChunk, String writerName) {
-		buffer[index].setContent(subChunk);
+	public synchronized void write(Integer subChunkIndex, Integer index, String subChunk, String writerName) {
+		buffer.add(new SubChunk(subChunkIndex, index, subChunk));
 	}
 
-	public synchronized String read(String readerName, Integer index) throws InterruptedException {
+	public synchronized SubChunk read() throws InterruptedException {
 		// buffer[index].setChunkIndex(buffer[index].getSubChunkIndex() + 1);
-		return buffer[index].getContent();
-	}
-
-	public SubChunk[] getBuffer() {
-		return buffer;
-	}
-
-	public void setBuffer(SubChunk[] buffer) {
-		this.buffer = buffer;
+		return buffer.poll();
 	}
 
 	public Integer getCapacity() {
@@ -36,6 +28,15 @@ public class SubChunkBuffer {
 
 	public void setCapacity(Integer capacity) {
 		this.capacity = capacity;
+	}
+
+	public void add(SubChunk subChunk) {
+		buffer.add(subChunk);
+
+	}
+
+	public Integer getSize() {
+		return this.buffer.size();
 	}
 
 }

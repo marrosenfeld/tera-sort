@@ -1,11 +1,7 @@
 package terasort.hawk.iit.edu;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.RandomAccessFile;
 
 public class SubChunkFileReader extends Thread {
 	private SubChunkBuffer subChunkBuffer;
@@ -29,43 +25,35 @@ public class SubChunkFileReader extends Thread {
 
 	@Override
 	public void run() {
-		// read assigned chunk from file and write in buffer
-		InputStream inputStream = null;
-		InputStreamReader isr = null;
-		BufferedReader br = null;
+
+		RandomAccessFile raf = null;
+		// try {
+
 		try {
-			inputStream = new FileInputStream(this.filename);
+			raf = new RandomAccessFile(filename, "rw");
+			raf.seek(offset);
 
-			// create new input stream reader
-			isr = new InputStreamReader(inputStream);
-			br = new BufferedReader(isr);
-
-			br.skip(offset);
 			Integer index = offset / chunkSize;
 			// creates buffer
-			char[] cbuf = new char[Math.min(subChunkSize, ((index + 1) * chunkSize) - offset)];
+			byte[] cbuf = new byte[Math.min(subChunkSize, ((index + 1) * chunkSize) - offset)];
 
 			for (int i = 0; i < subChunkCount; i++) {
-				int read = br.read(cbuf, 0, Math.min(subChunkSize, ((index + 1) * chunkSize) - offset));
-				System.out.println(this.getName() + " " + i);
-				subChunkBuffer.write(index, String.valueOf(cbuf), this.getName());
-				System.out.println(String.format("%s read %d/%d", this.getName(), i, subChunkCount));
+				System.out.println("To read " + Math.min(subChunkSize, ((index + 1) * chunkSize) - offset));
+
+				int read = raf.read(cbuf, 0, Math.min(subChunkSize, ((index + 1) * chunkSize) - offset));
+
+				Integer subChunkIndex = (offset % chunkSize) / subChunkSize;
+				subChunkBuffer.write(subChunkIndex, index, new String(cbuf, "UTF8"), "2");
+				System.out.println("Read : " + cbuf.length);
 				index++;
-				br.skip(chunkSize - subChunkSize);
+				raf.skipBytes(chunkSize - subChunkSize);
 			}
-		} catch (FileNotFoundException e) {
-			throw new RuntimeException(e);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		} finally {
 			try {
-				if (inputStream != null)
-					inputStream.close();
-				if (isr != null)
-					isr.close();
-				if (br != null)
-					br.close();
-			} catch (Exception e) {
+				raf.close();
+			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
 		}
