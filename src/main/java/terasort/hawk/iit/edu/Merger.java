@@ -23,7 +23,8 @@ public class Merger {
 	}
 
 	public void merge() {
-		SubChunkBuffer subChunkBuffer = new SubChunkBuffer(this.getChunkCount(), chunkSize, this.getSubChunkSize());
+		SubChunkBuffer subChunkBuffer = new SubChunkBuffer(this.getChunkCount(), chunkSize, this.getSubChunkSize(),
+				filePath);
 
 		// fill buffer with 1 subchunk of each chunk
 		List<SubChunkFileReader> subChunkFileReaders = getSubChunkFileReaders(fileReaderThreadsCount, chunkSize,
@@ -46,43 +47,20 @@ public class Merger {
 				chunkSize, fileSize);
 		finalChunkFileWriter.start();
 
-		SubChunk subChunk = null;
+		String record = null;
 		for (int i = 0; i < fileSize / recordSize; i++) {
 			// get minimum record from subchunks
 
 			try {
-				subChunk = subChunkBuffer.read();
+				record = subChunkBuffer.read();
 			} catch (InterruptedException e) {
 				throw new RuntimeException(e);
 			}
 
-			// remove the first record from the subchunk
-			// String record = subChunk.getContent().substring(0, recordSize);
-			String record = subChunk.getFirstRecord();
-			// subChunk.setContent(subChunk.getContent().substring(recordSize));
-			subChunk.removeFirstRecord();
-
-			if (subChunk.isEmpty()) {
-				// bring more from file if already not read the whole chunk
-				subChunk.setSubChunkIndex(subChunk.getSubChunkIndex() + 1);
-				if (subChunk.getSubChunkIndex() * this.getSubChunkSize() < chunkSize) {
-					SubChunkFileReader reader = new SubChunkFileReader(subChunkBuffer, filePath + "/dataset_tmp",
-							subChunk.getChunkIndex() * chunkSize
-									+ (subChunk.getSubChunkIndex() * this.getSubChunkSize()),
-							1, chunkSize, this.getSubChunkSize());
-
-					reader.run();
-				}
-			} else {
-				subChunkBuffer.add(subChunk);
-			}
 			chunk.append(record);
 			if (chunk.length() == chunkSize) {
 				chunkBuffer.write(chunk.toString(), "Merger");
 				chunk = new StringBuilder();
-			}
-			if (chunk.length() % 100000 == 0) {
-				System.out.println(chunk.length());
 			}
 		}
 		try {

@@ -1,9 +1,14 @@
 package terasort.hawk.iit.edu;
 
+import java.util.List;
+
+import com.google.common.base.Splitter;
+import com.google.common.collect.Lists;
+
 public class SubChunk implements Comparable<SubChunk> {
 
 	private Integer subChunkIndex;
-	private String content;
+	private List<String> records;
 	private Integer chunkIndex;
 	private String firstRecordKey;
 	private String firstRecord;
@@ -12,9 +17,13 @@ public class SubChunk implements Comparable<SubChunk> {
 		super();
 		this.subChunkIndex = subChunkIndex;
 		this.chunkIndex = chunkIndex;
-		this.content = content;
+
 		this.firstRecord = content.substring(0, 100);
 		this.firstRecordKey = firstRecord.substring(0, 10);
+		Iterable<String> recordStrings = Splitter.fixedLength(100).split(content);
+
+		records = Lists.newArrayList(recordStrings);
+
 	}
 
 	public Integer getSubChunkIndex() {
@@ -30,15 +39,16 @@ public class SubChunk implements Comparable<SubChunk> {
 	}
 
 	public void removeFirstRecord() {
-		this.content = this.content.substring(100);
-		if (!this.content.isEmpty()) {
-			this.firstRecord = this.content.substring(0, 100);
-			this.firstRecordKey = firstRecord.substring(0, 10);
+		this.records.remove(0);
+
+		if (!this.isEmpty()) {
+			this.firstRecord = this.records.get(0);
+			this.firstRecordKey = this.firstRecord.substring(0, 10);
 		}
 	}
 
 	public Boolean isEmpty() {
-		return this.content.isEmpty();
+		return this.records.isEmpty();
 	}
 
 	public String getFirstRecord() {

@@ -38,13 +38,12 @@ public class SubChunkFileReader extends Thread {
 			byte[] cbuf = new byte[Math.min(subChunkSize, ((index + 1) * chunkSize) - offset)];
 
 			for (int i = 0; i < subChunkCount; i++) {
-				System.out.println("To read " + Math.min(subChunkSize, ((index + 1) * chunkSize) - offset));
 
 				int read = raf.read(cbuf, 0, Math.min(subChunkSize, ((index + 1) * chunkSize) - offset));
 
 				Integer subChunkIndex = (offset % chunkSize) / subChunkSize;
 				subChunkBuffer.write(subChunkIndex, index, new String(cbuf, "UTF8"), "2");
-				System.out.println("Read : " + cbuf.length);
+
 				index++;
 				raf.skipBytes(chunkSize - subChunkSize);
 			}
