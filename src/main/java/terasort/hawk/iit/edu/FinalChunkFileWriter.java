@@ -9,12 +9,14 @@ public class FinalChunkFileWriter extends Thread {
 	private String filename;
 	private Integer chunkSize;
 	private Long fileSize;
+	private String filePath;
 
 	public FinalChunkFileWriter(ChunkBuffer chunkBuffer, String threadName, String filename, Integer chunkSize,
-			Long fileSize) {
+			Long fileSize, String filePath) {
 		this.chunkBuffer = chunkBuffer;
 		this.setName(threadName);
 		this.filename = filename;
+		this.filePath = filePath;
 		this.chunkSize = chunkSize;
 		this.fileSize = fileSize;
 	}
@@ -25,7 +27,7 @@ public class FinalChunkFileWriter extends Thread {
 		RandomAccessFile raf = null;
 
 		try {
-			raf = new RandomAccessFile(filename, "rw");
+			raf = new RandomAccessFile(filePath + filename, "rw");
 			Integer size = 0;
 			while (size < fileSize) {
 
@@ -33,7 +35,9 @@ public class FinalChunkFileWriter extends Thread {
 				// + (2 * i * chunkSize));
 				raf.writeBytes(chunk);
 				size += chunk.length();
-				System.out.println(String.format("Write %d/%d to final file", size, fileSize));
+				if (size % 100000000 == 0) {
+					System.out.println(String.format("Write %d/%d to final file", size, fileSize));
+				}
 			}
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException(e);

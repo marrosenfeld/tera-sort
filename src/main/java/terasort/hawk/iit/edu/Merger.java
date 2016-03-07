@@ -44,7 +44,7 @@ public class Merger {
 		StringBuilder chunk = new StringBuilder();
 		ChunkBuffer chunkBuffer = new ChunkBuffer(1);
 		FinalChunkFileWriter finalChunkFileWriter = new FinalChunkFileWriter(chunkBuffer, "Final", "dataset_final",
-				chunkSize, fileSize);
+				chunkSize, fileSize, filePath);
 		finalChunkFileWriter.start();
 
 		String record = null;

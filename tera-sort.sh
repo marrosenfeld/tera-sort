@@ -3,6 +3,7 @@ if [ "$#" -lt 5 ]; then
 	exit 125
 fi
 
-java -Xmx2048m -cp target/shared-memory-tera-sort.jar terasort.hawk.iit.edu.TeraSort $1 $2 $3 $4 $5 $6
+
+java -Xmx2048m -cp shared-memory-tera-sort.jar terasort.hawk.iit.edu.TeraSort $1 $2 $3 $4 $5 $6
 printf "\nvalsort result:\n"
-~/GenSort/gensort-linux-1.5/64/valsort dataset_final
+~/GenSort/64/valsort $6'dataset_final'

@@ -74,6 +74,9 @@ public class TeraSort {
 		long endTime = System.currentTimeMillis();
 		System.out.println("End");
 		System.out.println("Time taken: " + (endTime - startTime));
+		// remove temp file
+		File file = new File(filePath + "dataset_tmp");
+		file.delete();
 	}
 
 	private static void removeCurrentFiles(String filePath) {
