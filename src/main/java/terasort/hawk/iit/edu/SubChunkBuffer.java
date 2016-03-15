@@ -69,8 +69,9 @@ public class SubChunkBuffer {
 			subChunk.setSubChunkIndex(subChunk.getSubChunkIndex() + 1);
 			if (subChunk.getSubChunkIndex() * subChunkSize < chunkSize) {
 				SubChunkFileReader reader = new SubChunkFileReader(this, filePath + "/dataset_tmp",
-						subChunk.getChunkIndex() * chunkSize + (subChunk.getSubChunkIndex() * subChunkSize), 1,
-						chunkSize, subChunkSize);
+						Long.valueOf(subChunk.getChunkIndex()) * Long.valueOf(chunkSize)
+								+ (subChunk.getSubChunkIndex() * subChunkSize),
+						1, chunkSize, subChunkSize);
 
 				reader.run();
 			}

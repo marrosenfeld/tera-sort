@@ -77,7 +77,8 @@ public class Merger {
 		Integer chunksPerThread = ((Long) (fileSize / chunkSize / fileReaderThreads)).intValue();
 		for (int i = 0; i < fileReaderThreads; i++) {
 			SubChunkFileReader reader = new SubChunkFileReader(subChunkBuffer, filePath + "dataset_tmp",
-					i * chunkSize * chunksPerThread, chunksPerThread, chunkSize, this.getSubChunkSize());
+					Long.valueOf(i) * Long.valueOf(chunkSize) * Long.valueOf(chunksPerThread), chunksPerThread,
+					chunkSize, this.getSubChunkSize());
 			subChunkFileReaders.add(reader);
 		}
 		if (fileSize / chunkSize % fileReaderThreads > 0) {

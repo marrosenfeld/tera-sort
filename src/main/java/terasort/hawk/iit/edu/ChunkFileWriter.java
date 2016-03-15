@@ -7,12 +7,12 @@ import java.io.RandomAccessFile;
 public class ChunkFileWriter extends Thread {
 	private ChunkBuffer chunkBuffer;
 	private String filename;
-	private Integer offset;
+	private Long offset;
 	private Integer chunkCount;
 	private Integer chunkSize;
 
-	public ChunkFileWriter(ChunkBuffer chunkBuffer, String threadName, String filename, Integer offset,
-			Integer chunkCount, Integer chunkSize) {
+	public ChunkFileWriter(ChunkBuffer chunkBuffer, String threadName, String filename, Long offset, Integer chunkCount,
+			Integer chunkSize) {
 		this.chunkBuffer = chunkBuffer;
 		this.setName(threadName);
 		this.filename = filename;
@@ -31,8 +31,10 @@ public class ChunkFileWriter extends Thread {
 			raf.seek(offset);
 			for (int i = 0; i < chunkCount; i++) {
 				String chunk = chunkBuffer.read(this.getName());
-				System.out.println(
-						String.format("%s write orderd chunk %d/%d to file", this.getName(), i + 1, chunkCount));
+				if (i % 10 == 0) {
+					System.out.println(
+							String.format("%s write orderd chunk %d/%d to file", this.getName(), i + 1, chunkCount));
+				}
 				raf.writeBytes(chunk);
 			}
 		} catch (FileNotFoundException e) {
@@ -67,11 +69,11 @@ public class ChunkFileWriter extends Thread {
 		this.filename = filename;
 	}
 
-	public Integer getOffset() {
+	public Long getOffset() {
 		return offset;
 	}
 
-	public void setOffset(Integer offset) {
+	public void setOffset(Long offset) {
 		this.offset = offset;
 	}
 

@@ -10,12 +10,12 @@ import java.io.InputStreamReader;
 public class ChunkFileReader extends Thread {
 	private ChunkBuffer chunkBuffer;
 	private String filename;
-	private Integer offset;
+	private Long offset;
 	private Integer chunkCount;
 	private Integer chunkSize;
 
-	public ChunkFileReader(ChunkBuffer chunkBuffer, String threadName, String filename, Integer offset,
-			Integer chunkCount, Integer chunkSize) {
+	public ChunkFileReader(ChunkBuffer chunkBuffer, String threadName, String filename, Long offset, Integer chunkCount,
+			Integer chunkSize) {
 		this.chunkBuffer = chunkBuffer;
 		this.setName(threadName);
 		this.filename = filename;

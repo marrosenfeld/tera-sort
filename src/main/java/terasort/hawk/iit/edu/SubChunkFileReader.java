@@ -6,12 +6,12 @@ import java.io.RandomAccessFile;
 public class SubChunkFileReader extends Thread {
 	private SubChunkBuffer subChunkBuffer;
 	private String filename;
-	private Integer offset;
+	private Long offset;
 	private Integer subChunkCount;
 	private Integer chunkSize;
 	private Integer subChunkSize;
 
-	public SubChunkFileReader(SubChunkBuffer subChunkBuffer, String filename, Integer offset, Integer subChunkCount,
+	public SubChunkFileReader(SubChunkBuffer subChunkBuffer, String filename, Long offset, Integer subChunkCount,
 			Integer chunkSize, Integer subChunkSize) {
 		super();
 		this.subChunkBuffer = subChunkBuffer;
@@ -33,15 +33,15 @@ public class SubChunkFileReader extends Thread {
 			raf = new RandomAccessFile(filename, "rw");
 			raf.seek(offset);
 
-			Integer index = offset / chunkSize;
+			Integer index = (int) (offset / chunkSize);
 			// creates buffer
-			byte[] cbuf = new byte[Math.min(subChunkSize, ((index + 1) * chunkSize) - offset)];
+			byte[] cbuf = new byte[subChunkSize];
 
 			for (int i = 0; i < subChunkCount; i++) {
 
-				int read = raf.read(cbuf, 0, Math.min(subChunkSize, ((index + 1) * chunkSize) - offset));
+				int read = raf.read(cbuf, 0, subChunkSize);
 
-				Integer subChunkIndex = (offset % chunkSize) / subChunkSize;
+				Integer subChunkIndex = (int) ((offset % chunkSize) / subChunkSize);
 				subChunkBuffer.write(subChunkIndex, index, new String(cbuf, "UTF8"), "2");
 
 				index++;
@@ -66,11 +66,11 @@ public class SubChunkFileReader extends Thread {
 		this.filename = filename;
 	}
 
-	public Integer getOffset() {
+	public Long getOffset() {
 		return offset;
 	}
 
-	public void setOffset(Integer offset) {
+	public void setOffset(Long offset) {
 		this.offset = offset;
 	}
 

@@ -92,7 +92,8 @@ public class TeraSort {
 		Integer chunksPerThread = ((Long) (fileSize / chunkSize / fileWriterThreads)).intValue();
 		for (int i = 0; i < fileWriterThreads; i++) {
 			ChunkFileWriter writer = new ChunkFileWriter(orderedChunkBuffer, "fileWriter " + i,
-					filePath + "dataset_tmp", i * chunkSize * chunksPerThread, chunksPerThread, chunkSize);
+					filePath + "dataset_tmp", i * Long.valueOf(chunkSize) * Long.valueOf(chunksPerThread),
+					chunksPerThread, chunkSize);
 			chunkFileWriters.add(writer);
 		}
 		if (fileSize / chunkSize % fileWriterThreads > 0) {
@@ -135,7 +136,8 @@ public class TeraSort {
 		Integer chunksPerThread = ((Long) (fileSize / chunkSize / fileThreads)).intValue();
 		for (int i = 0; i < fileThreads; i++) {
 			ChunkFileReader reader = new ChunkFileReader(chunkBuffer, "fileReader " + i, filePath + "dataset",
-					i * chunkSize * chunksPerThread, chunksPerThread, chunkSize);
+					Long.valueOf(i) * Long.valueOf(chunkSize) * Long.valueOf(chunksPerThread), chunksPerThread,
+					chunkSize);
 			chunkFileReaders.add(reader);
 		}
 		if (fileSize / chunkSize % fileThreads > 0) {

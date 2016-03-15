@@ -28,16 +28,16 @@ public class FinalChunkFileWriter extends Thread {
 
 		try {
 			raf = new RandomAccessFile(filePath + filename, "rw");
-			Integer size = 0;
+			Long size = Long.valueOf(0);
 			while (size < fileSize) {
 
 				String chunk = chunkBuffer.read(this.getName());
 				// + (2 * i * chunkSize));
 				raf.writeBytes(chunk);
 				size += chunk.length();
-				if (size % 100000000 == 0) {
-					System.out.println(String.format("Write %d/%d to final file", size, fileSize));
-				}
+				// if (size % 100000000 == 0) {
+				System.out.println(String.format("Write %d/%d to final file", size, fileSize));
+				// }
 			}
 		} catch (FileNotFoundException e) {
 			throw new RuntimeException(e);
