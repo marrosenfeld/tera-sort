@@ -3,7 +3,7 @@ sudo mkfs.ext4 -L MY_RAID /dev/md0
 sudo mkdir -p /mnt/raid
 sudo mount LABEL=MY_RAID /mnt/raid
 cd /mnt/raid
-mkdir data
+sudo mkdir data
 sudo chmod -R 777 data
 
 
