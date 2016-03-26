@@ -3,6 +3,9 @@ package terasort.hawk.iit.edu;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
+/**
+ * @author mrosenfeld Reads subchunks from file
+ */
 public class SubChunkFileReader extends Thread {
 	private SubChunkBuffer subChunkBuffer;
 	private String filename;

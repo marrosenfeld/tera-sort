@@ -59,7 +59,7 @@ public class SubChunkBuffer {
 	}
 
 	public synchronized String read() throws InterruptedException {
-		// buffer[index].setChunkIndex(buffer[index].getSubChunkIndex() + 1);
+
 		Aux aux = queue.poll();
 		SubChunk subChunk = this.buffer[aux.getIndex()];
 		String record = subChunk.getFirstRecord();

@@ -1,5 +1,8 @@
 package terasort.hawk.iit.edu;
 
+/**
+ * @author mrosenfeld Implementation of quick sort for records
+ */
 public class RecordQuickSort {
 	private Record recordArray[];
 	private int arrayLength;

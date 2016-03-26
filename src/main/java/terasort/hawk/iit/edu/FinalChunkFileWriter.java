@@ -4,6 +4,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
+/**
+ * @author mrosenfeld Writes final ordered chunks in disk
+ */
 public class FinalChunkFileWriter extends Thread {
 	private ChunkBuffer chunkBuffer;
 	private String filename;

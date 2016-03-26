@@ -5,6 +5,9 @@ import java.util.List;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 
+/**
+ * @author mrosenfeld SubChunk of a Chunk
+ */
 public class SubChunk implements Comparable<SubChunk> {
 
 	private Integer subChunkIndex;

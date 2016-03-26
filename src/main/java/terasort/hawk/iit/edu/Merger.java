@@ -3,6 +3,9 @@ package terasort.hawk.iit.edu;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author mrosenfeld Performs the merge phase
+ */
 public class Merger {
 	private Long fileSize;
 	private Integer chunkSize;

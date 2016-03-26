@@ -4,6 +4,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
+/**
+ * @author mrosenfeld Writes ordered chunks in disk
+ */
 public class ChunkFileWriter extends Thread {
 	private ChunkBuffer chunkBuffer;
 	private String filename;
@@ -29,6 +32,7 @@ public class ChunkFileWriter extends Thread {
 		try {
 			raf = new RandomAccessFile(filename, "rw");
 			raf.seek(offset);
+			// write in disk the assigned chunks
 			for (int i = 0; i < chunkCount; i++) {
 				String chunk = chunkBuffer.read(this.getName());
 				if (i % 10 == 0) {

@@ -2,6 +2,9 @@ package terasort.hawk.iit.edu;
 
 import org.apache.commons.lang3.StringUtils;
 
+/**
+ * @author mrosenfeld Sorts chunk in memory
+ */
 public class ChunkMemorySorter extends Thread {
 	private ChunkBuffer chunkBuffer;
 	private Integer recordSize;
@@ -27,6 +30,7 @@ public class ChunkMemorySorter extends Thread {
 			try {
 				String chunk = chunkBuffer.read(this.getName());
 				Record[] records = this.splitChunk(chunk, chunkSize, recordSize);
+				// perform quick sort
 				recordQuickSort.sort(records);
 				orderedChunkBuffer.write(StringUtils.join(records), this.getName());
 			} catch (InterruptedException e) {
